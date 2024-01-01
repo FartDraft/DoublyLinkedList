@@ -16,7 +16,20 @@ class DoublyLinkedList {
         Node* next;
     };
 
-    constexpr DoublyLinkedList(S size = SIZE) : _size{size} { assert(size > 0); }
+    DoublyLinkedList(T* values, uint64_t length, S size = SIZE) : _size{size} {
+        assert(size > 0);
+        for (uint64_t i = 0; i < length; ++i) {
+            push_tail(values[i]);
+        }
+    }
+
+    template <class Iterator>
+    DoublyLinkedList(const Iterator& it, S size = SIZE) : _size{size} {
+        assert(size > 0);
+        for (const T& value : it) {
+            push_tail(value);
+        }
+    }
 
     Node*
     push_tail(const T& value) {
@@ -44,7 +57,7 @@ class DoublyLinkedList {
                 os << " <-> " << curr->value;
             }
         }
-        os << " <- tail" << std::endl;
+        os << " <- tail";
         return os;
     }
 

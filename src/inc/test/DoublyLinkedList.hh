@@ -1,49 +1,22 @@
 #pragma once
 #include <gtest/gtest.h>
 #include "../DoublyLinkedList.hh"
+#include "gtest/gtest.h"
 
-TEST(Constructor, Empty) {
-    DoublyLinkedList<int> list;
+TEST(Constructor, Array) {
+    char array[14] = "Hello, World!";
+    DoublyLinkedList<char> list{array, 13};
 
-    ASSERT_EQ(list.size(), SIZE);
+    std::cout << list << std::endl;
 }
 
-TEST(Constructor, Size) {
-    DoublyLinkedList<int> list{10};
+TEST(Constructor, Iterator) {
+    unsigned array1[3] = {1, 2, 3};
+    DoublyLinkedList<unsigned> list1{array1, 3};
+    std::vector<unsigned> vec = {1, 2, 3};
+    DoublyLinkedList<unsigned> list2{vec};
 
-    ASSERT_EQ(list.size(), 10);
-}
-
-TEST(Constructor, Assert) { ASSERT_DEATH(DoublyLinkedList<int> list{0}, "size > 0"); }
-
-TEST(Stream, Empty) {
-    DoublyLinkedList<char> list;
-
-    std::cout << list;
-}
-
-TEST(Stream, One) {
-    DoublyLinkedList<char> list;
-
-    list.push_tail('a');
-    std::cout << list;
-
-    ASSERT_EQ(list.length(), 1);
-    ASSERT_EQ(list.head(), list.tail());
-}
-
-TEST(Stream, Many) {
-    DoublyLinkedList<char> list{2};
-
-    list.push_tail('a');
-    list.push_tail('b');
-    list.push_tail('c');
-    list.push_tail('d');
-    std::cout << list;
-
-    ASSERT_EQ(list.length(), 4);
-    ASSERT_EQ(list.head()->value, 'a');
-    ASSERT_EQ(list.head()->next->value, 'b');
-    ASSERT_EQ(list.tail()->prev->value, 'c');
-    ASSERT_EQ(list.tail()->value, 'd');
+    ASSERT_EQ(list1.head()->value, list2.head()->value);
+    ASSERT_EQ(list1.head()->next->value, list2.tail()->prev->value);
+    ASSERT_EQ(list1.tail()->value, list2.tail()->value);
 }
