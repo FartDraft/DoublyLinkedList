@@ -5,13 +5,13 @@
 TEST(Constructor, Empty) {
     DoublyLinkedList<int> list;
 
-    ASSERT_EQ(SIZE, list.size);
+    ASSERT_EQ(list.size(), SIZE);
 }
 
 TEST(Constructor, Size) {
     DoublyLinkedList<int> list{10};
 
-    ASSERT_EQ(10, list.size);
+    ASSERT_EQ(list.size(), 10);
 }
 
 TEST(Stream, Empty) {
@@ -26,10 +26,8 @@ TEST(Stream, One) {
     list.push_tail('a');
     std::cout << list;
 
-    ASSERT_EQ(1, list.length);
-    ASSERT_EQ(list.head, list.refs[0]);
-    ASSERT_EQ(list.tail, list.refs[1]);
-    ASSERT_EQ(list.head, list.tail);
+    ASSERT_EQ(list.length(), 1);
+    ASSERT_EQ(list.head(), list.tail());
 }
 
 TEST(Stream, Many) {
@@ -40,10 +38,8 @@ TEST(Stream, Many) {
     list.push_tail('c');
     std::cout << list;
 
-    ASSERT_EQ(3, list.length);
-    ASSERT_EQ('a', list.head->value);
-    ASSERT_EQ('b', list.head->next->value);
-    ASSERT_EQ('c', list.tail->value);
-    ASSERT_EQ(list.head, list.refs[0]);
-    ASSERT_EQ(list.tail, list.refs[1]);
+    ASSERT_EQ(list.length(), 3);
+    ASSERT_EQ(list.head()->value, 'a');
+    ASSERT_EQ(list.head()->next->value, 'b');
+    ASSERT_EQ(list.tail()->value, 'c');
 }
