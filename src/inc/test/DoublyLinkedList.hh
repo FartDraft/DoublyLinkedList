@@ -14,6 +14,8 @@ TEST(Constructor, Size) {
     ASSERT_EQ(list.size(), 10);
 }
 
+TEST(Constructor, Assert) { ASSERT_DEATH(DoublyLinkedList<int> list{0}, "size > 0"); }
+
 TEST(Stream, Empty) {
     DoublyLinkedList<char> list;
 
@@ -31,15 +33,17 @@ TEST(Stream, One) {
 }
 
 TEST(Stream, Many) {
-    DoublyLinkedList<char> list;
+    DoublyLinkedList<char> list{2};
 
     list.push_tail('a');
     list.push_tail('b');
     list.push_tail('c');
+    list.push_tail('d');
     std::cout << list;
 
-    ASSERT_EQ(list.length(), 3);
+    ASSERT_EQ(list.length(), 4);
     ASSERT_EQ(list.head()->value, 'a');
     ASSERT_EQ(list.head()->next->value, 'b');
-    ASSERT_EQ(list.tail()->value, 'c');
+    ASSERT_EQ(list.tail()->prev->value, 'c');
+    ASSERT_EQ(list.tail()->value, 'd');
 }

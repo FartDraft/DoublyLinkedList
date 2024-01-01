@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 #include <iostream>
 #include <vector>
@@ -15,14 +16,19 @@ class DoublyLinkedList {
         Node* next;
     };
 
-    constexpr DoublyLinkedList(S size = SIZE) : _size{size} {}
+    constexpr DoublyLinkedList(S size = SIZE) : _size{size} { assert(size > 0); }
 
     Node*
     push_tail(const T& value) {
-        // TODO: Size'ify
         ++_len;
-        if (this->head() == nullptr) {
+        if (_refs.front() == nullptr) {
             return _refs.front() = _refs.back() = new Node{nullptr, value, nullptr};
+        }
+        if (_len > 2 and (_len - 2) % _size == 0) {
+            Node* new_node = new Node{_refs.back(), value, nullptr};
+            _refs.back()->next = new_node;
+            _refs.push_back(new_node);
+            return new_node;
         }
         return _refs.back() = _refs.back()->next = new Node{_refs.back(), value, nullptr};
     }
@@ -71,5 +77,6 @@ class DoublyLinkedList {
     uint64_t _len = 0;
     // _refs.front() = head, _refs.back() = tail
     std::vector<Node*> _refs = {nullptr, nullptr};
+    // > 0
     S _size;
 };
