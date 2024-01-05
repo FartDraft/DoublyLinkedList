@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <vector>
 
@@ -16,19 +17,24 @@ class DoublyLinkedList {
         Node* next;
     };
 
-    DoublyLinkedList(T* values, uint64_t length, S size = SIZE) : _size{size} {
-        assert(size > 0);
-        for (uint64_t i = 0; i < length; ++i) {
-            push_tail(values[i]);
-        }
-    }
-
     template <class Iterator>
     DoublyLinkedList(const Iterator& it, S size = SIZE) : _size{size} {
         assert(size > 0);
         for (const T& value : it) {
             push_tail(value);
         }
+    }
+
+    ~DoublyLinkedList() {
+        std::function<void(Node*)> _delete;
+        _delete = [&_delete](Node* head) -> void {
+            if (head == nullptr) {
+                return;
+            }
+            _delete(head->next);
+            delete head;
+        };
+        _delete(_refs[0]);
     }
 
     Node*

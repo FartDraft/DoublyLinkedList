@@ -4,15 +4,15 @@
 #include "gtest/gtest.h"
 
 TEST(Constructor, Array) {
-    char array[14] = "Hello, World!";
-    DoublyLinkedList<char> list{array, 13};
+    char array[] = "Hello, World!";
+    DoublyLinkedList<char> list{array};
 
     std::cout << list << std::endl;
 }
 
 TEST(Constructor, Iterator) {
-    unsigned array1[3] = {1, 2, 3};
-    DoublyLinkedList<unsigned> list1{array1, 3};
+    unsigned array[] = {1, 2, 3};
+    DoublyLinkedList<unsigned> list1{array};
     std::vector<unsigned> vec = {1, 2, 3};
     DoublyLinkedList<unsigned> list2{vec};
 
