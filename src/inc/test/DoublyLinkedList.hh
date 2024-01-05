@@ -2,27 +2,40 @@
 #include <gtest/gtest.h>
 #include "../DoublyLinkedList.hh"
 
-TEST(Constructor, Array) {
-    char array[] = "Hello, World!";
-    DoublyLinkedList<char> list{array};
+TEST(Constructor, Empty) {
+    DoublyLinkedList<int> list;
+
+    list.push_tail(1);
+    list.push_tail(20);
+    list.push_tail(300);
 
     std::cout << list << std::endl;
 }
 
-TEST(Constructor, Iterator) {
-    unsigned array[] = {1, 2, 3};
-    DoublyLinkedList<unsigned> list1{array};
-    std::vector<unsigned> vec = {1, 2, 3};
-    DoublyLinkedList<unsigned> list2{vec};
+TEST(Constructor, FromArray) {
+    unsigned array[3] = {1, 2, 3};
+    DoublyLinkedList list1{array, array + 3};
+    DoublyLinkedList<unsigned> list2;
 
-    ASSERT_EQ(list1.head()->value, list2.head()->value);
-    ASSERT_EQ(list1.head()->next->value, list2.tail()->prev->value);
-    ASSERT_EQ(list1.tail()->value, list2.tail()->value);
+    list2.push_tail(1);
+    list2.push_tail(2);
+    list2.push_tail(3);
+
+    ASSERT_EQ(list1, list2);
 }
 
-TEST(Iterator, For) {
+TEST(Constructor, Iterator) {
+    unsigned array[3] = {1, 2, 3};
+    DoublyLinkedList list1{array, array + 3};
+    std::vector<unsigned> vec = {1, 2, 3};
+    DoublyLinkedList<unsigned> list2{vec.begin(), vec.end()};
+
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Iterator, Loop) {
     std::string s = "Hello, World!";
-    DoublyLinkedList<char> list{s};
+    DoublyLinkedList<char> list{s.begin(), s.end()};
 
     for (const auto& value : list) {
         std::cout << value;
@@ -31,21 +44,23 @@ TEST(Iterator, For) {
 }
 
 TEST(Iterator, Forward) {
-    std::string s = "BGTU";
-    DoublyLinkedList<char> list{s};
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+    DoublyLinkedList<int> list{vec.begin(), vec.end()};
 
-    for (auto&& it = list.begin(); it != list.end(); ++it) {
-        *it = '!';
+    int sum = 0;
+    for (auto it = list.cbegin(); it != list.cend(); ++it) {
+        sum += *it;
     }
-    std::cout << list << std::endl;
+
+    ASSERT_EQ(sum, 15);
 }
 
 TEST(Iterator, Reversed) {
     std::string s = "I'll be back";
-    DoublyLinkedList<char> list{s};
+    DoublyLinkedList<char> list{s.crbegin(), s.crend()};
 
-    for (auto it = list.rbegin(); it != list.rend(); ++it) {
-        std::cout << *it;
+    size_t i = 0;
+    for (auto it = list.crbegin(); it != list.crend(); ++it) {
+        ASSERT_EQ(*it, s[i++]);
     }
-    std::cout << std::endl;
 }

@@ -18,11 +18,20 @@ class DoublyLinkedList {
         Node* next;
     };
 
-    template <class Iterator>
-    DoublyLinkedList(const Iterator& it, S size = SIZE) : _size{size} {
+    DoublyLinkedList(S size = SIZE) : _size{size} { assert(size > 0); }
+
+    DoublyLinkedList(T* start, T* stop, S size = SIZE) : _size{size} {
         assert(size > 0);
-        for (const T& value : it) {
-            push_tail(value);
+        for (; start != stop; ++start) {
+            push_tail(*start);
+        }
+    }
+
+    template <class Iterator>
+    DoublyLinkedList(const Iterator& begin, const Iterator& end, S size = SIZE) : _size{size} {
+        assert(size > 0);
+        for (auto it = begin; it != end; ++it) {
+            push_tail(*it);
         }
     }
 
@@ -66,6 +75,24 @@ class DoublyLinkedList {
         }
         os << " <- tail";
         return os;
+    }
+
+    [[nodiscard]] constexpr bool
+    operator==(const DoublyLinkedList<T>& other) const noexcept {
+        if (this->_len != other._len) {
+            return false;
+        }
+        for (auto it1 = this->cbegin(), it2 = other.cbegin(); it1 != other.cend(); ++it1, ++it2) {
+            if (*it1 != *it2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    [[nodiscard]] constexpr bool
+    operator!=(const DoublyLinkedList<T>& other) const noexcept {
+        return !(*this == other);
     }
 
     [[nodiscard]] constexpr bool
