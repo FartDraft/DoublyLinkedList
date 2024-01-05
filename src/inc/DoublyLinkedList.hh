@@ -94,6 +94,8 @@ class DoublyLinkedList {
     }
 
     class Iterator {
+        Node* _node;
+
       public:
         using iterator_category = std::bidirectional_iterator_tag;
         using difference_type = std::ptrdiff_t;
@@ -101,7 +103,7 @@ class DoublyLinkedList {
         using pointer = T*;
         using reference = T&;
 
-        explicit Iterator(Node* node, bool is_reversed = false) : _node{node}, _is_reversed{is_reversed} {}
+        explicit Iterator(Node* node) : _node{node} {}
 
         [[nodiscard]] constexpr reference
         operator*() const noexcept {
@@ -110,7 +112,7 @@ class DoublyLinkedList {
 
         constexpr Iterator&
         operator++() noexcept {
-            _node = _is_reversed ? _node->prev : _node->next;
+            _node = _node->next;
             return *this;
         }
 
@@ -123,7 +125,7 @@ class DoublyLinkedList {
 
         constexpr Iterator&
         operator--() noexcept {
-            _node = _is_reversed ? _node->next : _node->prev;
+            _node = _node->prev;
             return *this;
         }
 
@@ -143,10 +145,6 @@ class DoublyLinkedList {
         operator!=(const Iterator& other) const noexcept {
             return !(*this == other);
         }
-
-      private:
-        Node* _node;
-        bool _is_reversed;
     };
 
     Iterator
@@ -155,18 +153,200 @@ class DoublyLinkedList {
     }
 
     Iterator
-    rbegin() const {
-        return Iterator(_refs.back(), true);
-    }
-
-    Iterator
     end() const {
         return Iterator(nullptr);
     }
 
-    Iterator
+    class ConstIterator {
+        Node* _node;
+
+      public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = const T&;
+
+        explicit ConstIterator(Node* node) : _node{node} {}
+
+        [[nodiscard]] constexpr reference
+        operator*() const noexcept {
+            return _node->value;
+        }
+
+        constexpr ConstIterator&
+        operator++() noexcept {
+            _node = _node->next;
+            return *this;
+        }
+
+        constexpr ConstIterator
+        operator++(int) noexcept {
+            ConstIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        constexpr ConstIterator&
+        operator--() noexcept {
+            _node = _node->prev;
+            return *this;
+        }
+
+        constexpr ConstIterator
+        operator--(int) noexcept {
+            ConstIterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator==(const ConstIterator& other) const noexcept {
+            return _node == other._node;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator!=(const ConstIterator& other) const noexcept {
+            return !(*this == other);
+        }
+    };
+
+    ConstIterator
+    cbegin() const {
+        return ConstIterator(_refs.front());
+    }
+
+    ConstIterator
+    cend() const {
+        return ConstIterator(nullptr);
+    }
+
+    class ReverseIterator {
+        Node* _node;
+
+      public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
+
+        explicit ReverseIterator(Node* node) : _node{node} {}
+
+        [[nodiscard]] constexpr reference
+        operator*() const noexcept {
+            return _node->value;
+        }
+
+        constexpr ReverseIterator&
+        operator++() noexcept {
+            _node = _node->prev;
+            return *this;
+        }
+
+        constexpr ReverseIterator
+        operator++(int) noexcept {
+            ReverseIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        constexpr ReverseIterator&
+        operator--() noexcept {
+            _node = _node->next;
+            return *this;
+        }
+
+        constexpr ReverseIterator
+        operator--(int) noexcept {
+            ReverseIterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator==(const ReverseIterator& other) const noexcept {
+            return _node == other._node;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator!=(const ReverseIterator& other) const noexcept {
+            return !(*this == other);
+        }
+    };
+
+    ReverseIterator
+    rbegin() const {
+        return ReverseIterator(_refs.back());
+    }
+
+    ReverseIterator
     rend() const {
-        return Iterator(nullptr, true);
+        return ReverseIterator(nullptr);
+    }
+
+    class ConstReverseIterator {
+        Node* _node;
+
+      public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = const T&;
+
+        explicit ConstReverseIterator(Node* node) : _node{node} {}
+
+        [[nodiscard]] constexpr reference
+        operator*() const noexcept {
+            return _node->value;
+        }
+
+        constexpr ConstReverseIterator&
+        operator++() noexcept {
+            _node = _node->prev;
+            return *this;
+        }
+
+        constexpr ConstReverseIterator
+        operator++(int) noexcept {
+            ConstReverseIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        constexpr ConstReverseIterator&
+        operator--() noexcept {
+            _node = _node->next;
+            return *this;
+        }
+
+        constexpr ConstReverseIterator
+        operator--(int) noexcept {
+            ConstReverseIterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator==(const ConstReverseIterator& other) const noexcept {
+            return _node == other._node;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator!=(const ConstReverseIterator& other) const noexcept {
+            return !(*this == other);
+        }
+    };
+
+    ConstReverseIterator
+    crbegin() const {
+        return ConstReverseIterator(_refs.back());
+    }
+
+    ConstReverseIterator
+    crend() const {
+        return ConstReverseIterator(nullptr);
     }
 
   private:
