@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "../DoublyLinkedList.hh"
 
-TEST(Constructor, Empty) {
+TEST(Property, Constructor_Empty) {
     DoublyLinkedList<int> list;
 
     list.push_tail(1);
@@ -12,9 +12,10 @@ TEST(Constructor, Empty) {
     std::cout << list << std::endl;
 }
 
-TEST(Constructor, InitList) {
+TEST(Property, Constructor_Array) {
     DoublyLinkedList<unsigned> list1;
-    DoublyLinkedList<unsigned> list2 = {1, 2, 3};
+    unsigned array[3] = {1, 2, 3};
+    DoublyLinkedList<unsigned> list2{array, array + 3};
 
     list1.push_tail(1);
     list1.push_tail(2);
@@ -23,15 +24,7 @@ TEST(Constructor, InitList) {
     ASSERT_EQ(list1, list2);
 }
 
-TEST(Constructor, Array) {
-    double array[5] = {-0.5, 0, 0.5, 1, 1.5};
-    DoublyLinkedList<double> list1{array, array + 5};
-    DoublyLinkedList<double> list2 = {-0.5, 0, 0.5, 1, 1.5};
-
-    ASSERT_EQ(list1, list2);
-}
-
-TEST(Constructor, Iterator) {
+TEST(Property, Constructor_Iterator) {
     char array[5] = "Egor";
     DoublyLinkedList<char> list1{array, array + 4};
     std::vector<char> vec = {'E', 'g', 'o', 'r'};
@@ -40,7 +33,7 @@ TEST(Constructor, Iterator) {
     ASSERT_EQ(list1, list2);
 }
 
-TEST(Iterator, Loop) {
+TEST(Property, Iterator_Loop) {
     std::string s = "Hello, World!";
     DoublyLinkedList<char> list{s.begin(), s.end()};
 
@@ -50,7 +43,7 @@ TEST(Iterator, Loop) {
     std::cout << std::endl;
 }
 
-TEST(Iterator, Forward) {
+TEST(Property, Iterator_Forward) {
     std::vector<int> vec = {1, 2, 3, 4, 5};
     DoublyLinkedList<int> list{vec.begin(), vec.end()};
 
@@ -62,7 +55,7 @@ TEST(Iterator, Forward) {
     ASSERT_EQ(sum, 15);
 }
 
-TEST(Iterator, Reversed) {
+TEST(Property, Iterator_Reversed) {
     std::string s = "I'll be back";
     DoublyLinkedList<char> list{s.crbegin(), s.crend()};
 
@@ -72,21 +65,22 @@ TEST(Iterator, Reversed) {
     }
 }
 
-TEST(At, Throw) {
+TEST(Method, At_Throw) {
     DoublyLinkedList<int> list;
 
     ASSERT_THROW(static_cast<void>(list.at(1)), std::out_of_range);
 }
 
-TEST(At, NoSize) {
-    DoublyLinkedList<unsigned> list = {1, 2, 3};
+TEST(Method, At_NoSize) {
+    unsigned array[] = {1, 2, 3};
+    DoublyLinkedList<unsigned> list{array, array + 3};
 
     ASSERT_EQ(list.at(0)->value, 1);
     ASSERT_EQ(list.at(1)->value, 2);
     ASSERT_EQ(list.at(2)->value, 3);
 }
 
-TEST(At, Size) {
+TEST(Method, At_Size) {
     int array[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     DoublyLinkedList<int> list{array, array + 10, 4};
 
@@ -100,4 +94,17 @@ TEST(At, Size) {
     ASSERT_EQ(list.at(7)->value, 8);
     ASSERT_EQ(list.at(8)->value, 9);
     ASSERT_EQ(list.at(9)->value, 10);
+}
+
+TEST(Method, Clear_) {
+    DoublyLinkedList<char> list1;
+    std::string s = "clear";
+    DoublyLinkedList<char> list2{s.begin(), s.end(), 4};
+
+    list2.clear();
+
+    ASSERT_EQ(list1, list2);
+    ASSERT_EQ(list2.empty(), true);
+    ASSERT_EQ(list2.length(), 0);
+    ASSERT_EQ(list2.size(), 4);
 }

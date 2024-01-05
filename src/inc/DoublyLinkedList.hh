@@ -3,7 +3,6 @@
 #include <cassert>
 #include <cstdint>
 #include <functional>
-#include <initializer_list>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
@@ -22,12 +21,6 @@ class DoublyLinkedList {
 
     DoublyLinkedList(S size = SIZE) : _size{size} { assert(size > 0); }
 
-    DoublyLinkedList(std::initializer_list<T> values) {
-        for (const T& value : values) {
-            push_tail(value);
-        }
-    }
-
     DoublyLinkedList(T* start, T* stop, S size = SIZE) : _size{size} {
         assert(size > 0);
         for (; start != stop; ++start) {
@@ -43,7 +36,10 @@ class DoublyLinkedList {
         }
     }
 
-    ~DoublyLinkedList() {
+    ~DoublyLinkedList() { this->clear(); }
+
+    void
+    clear(void) noexcept {
         std::function<void(Node*)> _delete;
         _delete = [&_delete](Node* head) -> void {
             if (head == nullptr) {
@@ -53,6 +49,9 @@ class DoublyLinkedList {
             delete head;
         };
         _delete(_refs[0]);
+
+        _len = 0;
+        _refs = {nullptr, nullptr};
     }
 
     Node*
