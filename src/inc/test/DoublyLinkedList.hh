@@ -12,23 +12,30 @@ TEST(Constructor, Empty) {
     std::cout << list << std::endl;
 }
 
-TEST(Constructor, FromArray) {
-    unsigned array[3] = {1, 2, 3};
-    DoublyLinkedList list1{array, array + 3};
-    DoublyLinkedList<unsigned> list2;
+TEST(Constructor, InitList) {
+    DoublyLinkedList<unsigned> list1;
+    DoublyLinkedList<unsigned> list2 = {1, 2, 3};
 
-    list2.push_tail(1);
-    list2.push_tail(2);
-    list2.push_tail(3);
+    list1.push_tail(1);
+    list1.push_tail(2);
+    list1.push_tail(3);
+
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Constructor, Array) {
+    double array[5] = {-0.5, 0, 0.5, 1, 1.5};
+    DoublyLinkedList<double> list1{array, array + 5};
+    DoublyLinkedList<double> list2 = {-0.5, 0, 0.5, 1, 1.5};
 
     ASSERT_EQ(list1, list2);
 }
 
 TEST(Constructor, Iterator) {
-    unsigned array[3] = {1, 2, 3};
-    DoublyLinkedList list1{array, array + 3};
-    std::vector<unsigned> vec = {1, 2, 3};
-    DoublyLinkedList<unsigned> list2{vec.begin(), vec.end()};
+    char array[5] = "Egor";
+    DoublyLinkedList<char> list1{array, array + 4};
+    std::vector<char> vec = {'E', 'g', 'o', 'r'};
+    DoublyLinkedList<char> list2{vec.begin(), vec.end()};
 
     ASSERT_EQ(list1, list2);
 }

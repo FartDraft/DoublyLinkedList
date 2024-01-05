@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdint>
 #include <functional>
+#include <initializer_list>
 #include <iostream>
 #include <iterator>
 #include <vector>
@@ -19,6 +20,13 @@ class DoublyLinkedList {
     };
 
     DoublyLinkedList(S size = SIZE) : _size{size} { assert(size > 0); }
+
+    DoublyLinkedList(std::initializer_list<T> values, S size = SIZE) : _size{size} {
+        assert(size > 0);
+        for (const T& value : values) {
+            push_tail(value);
+        }
+    }
 
     DoublyLinkedList(T* start, T* stop, S size = SIZE) : _size{size} {
         assert(size > 0);
