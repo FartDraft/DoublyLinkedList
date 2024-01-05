@@ -71,3 +71,33 @@ TEST(Iterator, Reversed) {
         ASSERT_EQ(*it, s[i++]);
     }
 }
+
+TEST(At, Throw) {
+    DoublyLinkedList<int> list;
+
+    ASSERT_THROW(static_cast<void>(list.at(1)), std::out_of_range);
+}
+
+TEST(At, NoSize) {
+    DoublyLinkedList<unsigned> list = {1, 2, 3};
+
+    ASSERT_EQ(list.at(0)->value, 1);
+    ASSERT_EQ(list.at(1)->value, 2);
+    ASSERT_EQ(list.at(2)->value, 3);
+}
+
+TEST(At, Size) {
+    int array[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    DoublyLinkedList<int> list{array, array + 10, 4};
+
+    ASSERT_EQ(list.at(0)->value, 1);
+    ASSERT_EQ(list.at(1)->value, 2);
+    ASSERT_EQ(list.at(2)->value, 3);
+    ASSERT_EQ(list.at(3)->value, 4);
+    ASSERT_EQ(list.at(4)->value, 5);
+    ASSERT_EQ(list.at(5)->value, 6);
+    ASSERT_EQ(list.at(6)->value, 7);
+    ASSERT_EQ(list.at(7)->value, 8);
+    ASSERT_EQ(list.at(8)->value, 9);
+    ASSERT_EQ(list.at(9)->value, 10);
+}

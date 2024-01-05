@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <iterator>
+#include <stdexcept>
 #include <vector>
 
 #define SIZE 8
@@ -21,8 +22,7 @@ class DoublyLinkedList {
 
     DoublyLinkedList(S size = SIZE) : _size{size} { assert(size > 0); }
 
-    DoublyLinkedList(std::initializer_list<T> values, S size = SIZE) : _size{size} {
-        assert(size > 0);
+    DoublyLinkedList(std::initializer_list<T> values) {
         for (const T& value : values) {
             push_tail(value);
         }
@@ -68,6 +68,19 @@ class DoublyLinkedList {
             return new_node;
         }
         return _refs.back() = _refs.back()->next = new Node{_refs.back(), value, nullptr};
+    }
+
+    [[nodiscard]] Node*
+    at(uint64_t pos) const {
+        if (pos >= _len) {
+            throw std::out_of_range("pos >= length");
+        }
+
+        Node* node = _refs[pos / _size];
+        for (S i = 0; i < pos % _size; ++i) {
+            node = node->next;
+        }
+        return node;
     }
 
     friend std::ostream&
