@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <vector>
 
 #define SIZE 8
@@ -90,6 +91,82 @@ class DoublyLinkedList {
     [[nodiscard]] constexpr auto
     size(void) const noexcept {
         return _size;
+    }
+
+    class Iterator {
+      public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
+
+        explicit Iterator(Node* node, bool is_reversed = false) : _node{node}, _is_reversed{is_reversed} {}
+
+        [[nodiscard]] constexpr reference
+        operator*() const noexcept {
+            return _node->value;
+        }
+
+        constexpr Iterator&
+        operator++() noexcept {
+            _node = _is_reversed ? _node->prev : _node->next;
+            return *this;
+        }
+
+        constexpr Iterator
+        operator++(int) noexcept {
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        constexpr Iterator&
+        operator--() noexcept {
+            _node = _is_reversed ? _node->next : _node->prev;
+            return *this;
+        }
+
+        constexpr Iterator
+        operator--(int) noexcept {
+            Iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator==(const Iterator& other) const noexcept {
+            return _node == other._node;
+        }
+
+        [[nodiscard]] constexpr bool
+        operator!=(const Iterator& other) const noexcept {
+            return !(*this == other);
+        }
+
+      private:
+        Node* _node;
+        bool _is_reversed;
+    };
+
+    Iterator
+    begin() const {
+        return Iterator(_refs.front());
+    }
+
+    Iterator
+    rbegin() const {
+        return Iterator(_refs.back(), true);
+    }
+
+    Iterator
+    end() const {
+        return Iterator(nullptr);
+    }
+
+    Iterator
+    rend() const {
+        return Iterator(nullptr, true);
     }
 
   private:

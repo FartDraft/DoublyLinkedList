@@ -1,7 +1,6 @@
 #pragma once
 #include <gtest/gtest.h>
 #include "../DoublyLinkedList.hh"
-#include "gtest/gtest.h"
 
 TEST(Constructor, Array) {
     char array[] = "Hello, World!";
@@ -19,4 +18,34 @@ TEST(Constructor, Iterator) {
     ASSERT_EQ(list1.head()->value, list2.head()->value);
     ASSERT_EQ(list1.head()->next->value, list2.tail()->prev->value);
     ASSERT_EQ(list1.tail()->value, list2.tail()->value);
+}
+
+TEST(Iterator, For) {
+    std::string s = "Hello, World!";
+    DoublyLinkedList<char> list{s};
+
+    for (const auto& value : list) {
+        std::cout << value;
+    }
+    std::cout << std::endl;
+}
+
+TEST(Iterator, Forward) {
+    std::string s = "BGTU";
+    DoublyLinkedList<char> list{s};
+
+    for (auto&& it = list.begin(); it != list.end(); ++it) {
+        *it = '!';
+    }
+    std::cout << list << std::endl;
+}
+
+TEST(Iterator, Reversed) {
+    std::string s = "I'll be back";
+    DoublyLinkedList<char> list{s};
+
+    for (auto it = list.rbegin(); it != list.rend(); ++it) {
+        std::cout << *it;
+    }
+    std::cout << std::endl;
 }
