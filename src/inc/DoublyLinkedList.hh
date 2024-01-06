@@ -117,6 +117,24 @@ class DoublyLinkedList {
         return node;
     }
 
+    DoublyLinkedList<T>&
+    operator=(const DoublyLinkedList<T>& other) {
+        clear();
+        for (const T& value : other) {
+            push_tail(value);
+        }
+        return *this;
+    }
+
+    DoublyLinkedList<T>&
+    operator=(std::initializer_list<T> init) {
+        clear();
+        for (const T& value : init) {
+            push_tail(value);
+        }
+        return *this;
+    }
+
     friend std::ostream&
     operator<<(std::ostream& os, const DoublyLinkedList<T>& list) noexcept {
         os << "head -> ";

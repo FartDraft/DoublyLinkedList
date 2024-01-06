@@ -76,6 +76,24 @@ TEST(Property, Iterator_Reversed) {
     }
 }
 
+TEST(Property, Assignment_Vector) {
+    DoublyLinkedList<int> list1(SIZE, {-10, -9, -8, -7, -6, -5});
+    DoublyLinkedList<int> list2(SIZE, {-1, 0, -1});
+
+    list1 = list2;
+
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Property, Assignment_InitializerList) {
+    DoublyLinkedList<int> list1(SIZE, {-10, -9, -8, -7, -6, -5});
+    DoublyLinkedList<int> list2(SIZE, {-1, 0, -1});
+
+    list1 = {-1, 0, -1};
+
+    ASSERT_EQ(list1, list2);
+}
+
 TEST(Method, Clear_) {
     DoublyLinkedList<int> list1(SIZE, {1, 2, 3});
     DoublyLinkedList<int> list2(SIZE);
