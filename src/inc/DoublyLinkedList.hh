@@ -3,13 +3,26 @@
 #include <cassert>
 #include <cstdint>
 #include <functional>
+#include <initializer_list>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
-#define SIZE 8
-
+/**
+ * @brief doubly linked list implementation with vector of references to every size-th element
+ *
+ * @tparam T value type
+ * @tparam S size type = unsigned int
+ *
+ * Constructors:
+ *     - DoublyLinkedList(S size) noexcept;
+ *     - DoublyLinkedList(S size, std::initializer_list<T> init);
+ *     - DoublyLinkedList(S size, T* start, T* stop);
+ *     - template <class InputIt>
+ *       DoublyLinkedList(S size, const InputIt& begin, const InputIt& end);
+ */
 template <typename T, typename S = unsigned>
 class DoublyLinkedList {
   public:
@@ -19,17 +32,24 @@ class DoublyLinkedList {
         Node* next;
     };
 
-    DoublyLinkedList(S size = SIZE) : _size{size} { assert(size > 0); }
+    DoublyLinkedList(S size) noexcept : _size(size) { assert(size > 0); }
 
-    DoublyLinkedList(T* start, T* stop, S size = SIZE) : _size{size} {
+    DoublyLinkedList(S size, std::initializer_list<T> init) : _size(size) {
+        assert(size > 0);
+        for (const T& value : init) {
+            push_tail(value);
+        }
+    }
+
+    DoublyLinkedList(S size, T* start, T* stop) : _size(size) {
         assert(size > 0);
         for (; start != stop; ++start) {
             push_tail(*start);
         }
     }
 
-    template <class Iterator>
-    DoublyLinkedList(const Iterator& begin, const Iterator& end, S size = SIZE) : _size{size} {
+    template <class InputIt>
+    DoublyLinkedList(S size, const InputIt& begin, const InputIt& end) : _size(size) {
         assert(size > 0);
         for (auto it = begin; it != end; ++it) {
             push_tail(*it);
@@ -67,6 +87,21 @@ class DoublyLinkedList {
             return new_node;
         }
         return _refs.back() = _refs.back()->next = new Node{_refs.back(), value, nullptr};
+    }
+
+    Node*
+    push_tail(T&& value) {
+        ++_len;
+        if (_refs.front() == nullptr) {
+            return _refs.front() = _refs.back() = new Node{nullptr, std::move(value), nullptr};
+        }
+        if (_len > 2 and (_len - 2) % _size == 0) {
+            Node* new_node = new Node{_refs.back(), std::move(value), nullptr};
+            _refs.back()->next = new_node;
+            _refs.push_back(new_node);
+            return new_node;
+        }
+        return _refs.back() = _refs.back()->next = new Node{_refs.back(), std::move(value), nullptr};
     }
 
     [[nodiscard]] Node*
