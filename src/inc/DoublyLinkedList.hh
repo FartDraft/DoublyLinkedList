@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <initializer_list>
@@ -205,6 +206,76 @@ class DoublyLinkedList {
             insert(pos++, *it);
         }
         return at(start);
+    }
+
+    T
+    pop_tail(void) noexcept {
+        if (_refs.front() == nullptr) {
+            return T();
+        }
+        --_len;
+        T result = _refs.back()->value;
+
+        if (_len == 0) {
+            _refs = {nullptr, nullptr};
+        } else {
+            _refs.back() = _refs.back()->prev;
+            delete _refs.back()->next;
+            _refs.back()->next = nullptr;
+            if ((_len - 1) % _size == 0) {
+                _refs.pop_back();
+            }
+        }
+        return result;
+    }
+
+    T
+    pop_head(void) noexcept {
+        if (_refs.front() == nullptr) {
+            return T();
+        }
+        --_len;
+        T result = _refs.front()->value;
+
+        if (_len == 0) {
+            _refs = {nullptr, nullptr};
+        } else {
+            _refs.front() = _refs.front()->next;
+            delete _refs.front()->prev;
+            _refs.front()->prev = nullptr;
+            for (uint64_t i = 1; i < _refs.size() - 1; ++i) {
+                _refs[i] = _refs[i]->next;
+            }
+            if ((_len - 1) % _size == 0) {
+                _refs.pop_back();
+            }
+        }
+        return result;
+    }
+
+    T
+    pop(uint64_t pos) {
+        if (pos == 0) {
+            return pop_head();
+        }
+        if (pos == _len - 1) {
+            return pop_tail();
+        }
+        Node* node = at(pos);
+        T result = node->value;
+
+        --_len;
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+        delete node;
+        for (uint64_t i = (pos % _size ? 1 : 0) + pos / _size; i < _refs.size() - 1; ++i) {
+            _refs[i] = _refs[i]->next;
+        }
+        if ((_len - 1) % _size == 0) {
+            _refs.pop_back();
+        }
+
+        return result;
     }
 
     [[nodiscard]] Node*

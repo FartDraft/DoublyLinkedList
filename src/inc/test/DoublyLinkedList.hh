@@ -207,18 +207,104 @@ TEST(Method, InsertValue_Size) {
 }
 
 TEST(Method, InsertInit_) {
-    DoublyLinkedList<int> list1(3, {1, 5});
-    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5});
+    DoublyLinkedList<int> list1(SIZE, {1, 5});
+    DoublyLinkedList<int> list2(SIZE, {1, 2, 3, 4, 5});
 
     ASSERT_EQ(list1.insert(1, {2, 3, 4})->value, 2);
     ASSERT_EQ(list1, list2);
 }
 
 TEST(Method, InsertIterator_) {
-    DoublyLinkedList<int> list1(3, {1, 5});
+    DoublyLinkedList<int> list1(SIZE, {1, 5});
     std::vector vec = {2, 3, 4};
-    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5});
+    DoublyLinkedList<int> list2(SIZE, {1, 2, 3, 4, 5});
 
     ASSERT_EQ(list1.insert(1, vec.begin(), vec.end())->value, 2);
     ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, PopTail_Empty) {
+    DoublyLinkedList<int> list1(SIZE, {});
+    DoublyLinkedList<int> list2(SIZE);
+
+    ASSERT_EQ(list1.pop_tail(), int());
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, PopTail_NoSize) {
+    DoublyLinkedList<int> list1(SIZE, {1, 2, 3, 4, 5});
+    DoublyLinkedList<int> list2(SIZE, {1, 2, 3});
+
+    ASSERT_EQ(list1.pop_tail(), 5);
+    ASSERT_EQ(list1.pop_tail(), 4);
+    ASSERT_EQ(list2.at(0)->value, 1);
+    ASSERT_EQ(list2.at(1)->value, 2);
+    ASSERT_EQ(list2.at(2)->value, 3);
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, PopTail_Size) {
+    DoublyLinkedList<int> list1(3, {1, 2, 3, 4, 5, 6, 7});
+    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5});
+
+    ASSERT_EQ(list1.pop_tail(), 7);
+    ASSERT_EQ(list1.pop_tail(), 6);
+    ASSERT_EQ(list2.at(0)->value, 1);
+    ASSERT_EQ(list2.at(1)->value, 2);
+    ASSERT_EQ(list2.at(2)->value, 3);
+    ASSERT_EQ(list1.at(3)->value, 4);
+    ASSERT_EQ(list1.at(4)->value, 5);
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, PopHead_NoSize) {
+    DoublyLinkedList<int> list1(SIZE, {1, 2, 3, 4, 5});
+    DoublyLinkedList<int> list2(SIZE, {3, 4, 5});
+
+    ASSERT_EQ(list1.pop_head(), 1);
+    ASSERT_EQ(list1.pop_head(), 2);
+    ASSERT_EQ(list2.at(0)->value, 3);
+    ASSERT_EQ(list2.at(1)->value, 4);
+    ASSERT_EQ(list2.at(2)->value, 5);
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, PopHead_Size) {
+    DoublyLinkedList<int> list1(3, {1, 2, 3, 4, 5, 6, 7, 8});
+    DoublyLinkedList<int> list2(3, {4, 5, 6, 7, 8});
+
+    ASSERT_EQ(list1.pop_head(), 1);
+    ASSERT_EQ(list1.pop_head(), 2);
+    ASSERT_EQ(list1.pop_head(), 3);
+    ASSERT_EQ(list2.at(0)->value, 4);
+    ASSERT_EQ(list2.at(1)->value, 5);
+    ASSERT_EQ(list2.at(2)->value, 6);
+    ASSERT_EQ(list2.at(3)->value, 7);
+    ASSERT_EQ(list2.at(4)->value, 8);
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, Pop_NoSize) {
+    DoublyLinkedList<int> list1(SIZE, {1, 2, 3});
+    DoublyLinkedList<int> list2(SIZE);
+
+    ASSERT_EQ(list1.pop(1), 2);
+    ASSERT_EQ(list1.pop(1), 3);
+    ASSERT_EQ(list1.pop(0), 1);
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, Pop_Size) {
+    DoublyLinkedList<int> list1(3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+
+    ASSERT_EQ(list1.pop(3), 4);
+    ASSERT_EQ(list1.pop(7), 9);
+    ASSERT_EQ(list1.pop(1), 2);
+    ASSERT_EQ(list1.pop(5), 8);
+    ASSERT_EQ(list1.at(0)->value, 1);
+    ASSERT_EQ(list1.at(1)->value, 3);
+    ASSERT_EQ(list1.at(2)->value, 5);
+    ASSERT_EQ(list1.at(3)->value, 6);
+    ASSERT_EQ(list1.at(4)->value, 7);
+    ASSERT_EQ(list1.at(5)->value, 10);
 }
