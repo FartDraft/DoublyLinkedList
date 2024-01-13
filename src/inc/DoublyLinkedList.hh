@@ -34,7 +34,7 @@ class DoublyLinkedList {
 
     DoublyLinkedList(S size) noexcept : _size(size) { assert(size > 0); }
 
-    DoublyLinkedList(S size, const std::initializer_list<T>& init) : _size(size) {
+    DoublyLinkedList(S size, std::initializer_list<T> init) : _size(size) {
         assert(size > 0);
         for (const T& value : init) {
             push_tail(value);
@@ -186,6 +186,25 @@ class DoublyLinkedList {
             _refs.push_back(_refs.back()->next);
         }
         return node->prev;
+    }
+
+    Node*
+    insert(uint64_t pos, std::initializer_list<T> init) {
+        uint64_t start = pos;
+        for (const T& value : init) {
+            insert(pos++, value);
+        }
+        return at(start);
+    }
+
+    template <class InputIt>
+    Node*
+    insert(uint64_t pos, const InputIt& begin, const InputIt& end) {
+        uint64_t start = pos;
+        for (auto it = begin; it != end; ++it) {
+            insert(pos++, *it);
+        }
+        return at(start);
     }
 
     [[nodiscard]] Node*

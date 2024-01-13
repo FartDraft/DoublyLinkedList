@@ -205,3 +205,20 @@ TEST(Method, InsertValue_Size) {
     ASSERT_EQ(list2.at(8)->value, 9);
     ASSERT_EQ(list2.at(9)->value, 10);
 }
+
+TEST(Method, InsertInit_) {
+    DoublyLinkedList<int> list1(3, {1, 5});
+    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5});
+
+    ASSERT_EQ(list1.insert(1, {2, 3, 4})->value, 2);
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, InsertIterator_) {
+    DoublyLinkedList<int> list1(3, {1, 5});
+    std::vector vec = {2, 3, 4};
+    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5});
+
+    ASSERT_EQ(list1.insert(1, vec.begin(), vec.end())->value, 2);
+    ASSERT_EQ(list1, list2);
+}
