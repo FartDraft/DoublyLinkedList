@@ -34,7 +34,7 @@ class DoublyLinkedList {
 
     DoublyLinkedList(S size) noexcept : _size(size) { assert(size > 0); }
 
-    DoublyLinkedList(S size, std::initializer_list<T> init) : _size(size) {
+    DoublyLinkedList(S size, const std::initializer_list<T>& init) : _size(size) {
         assert(size > 0);
         for (const T& value : init) {
             push_tail(value);
@@ -102,6 +102,90 @@ class DoublyLinkedList {
             return new_node;
         }
         return _refs.back() = _refs.back()->next = new Node{_refs.back(), std::move(value), nullptr};
+    }
+
+    Node*
+    push_head(const T& value) {
+        ++_len;
+        if (_refs.front() == nullptr) {
+            return _refs.front() = _refs.back() = new Node{nullptr, value, nullptr};
+        }
+        _refs.front()->prev = new Node{nullptr, value, _refs.front()};
+        for (size_t i = 0; i < _refs.size() - 1; ++i) {
+            _refs[i] = _refs[i]->prev;
+        }
+        if (_len > 2 and (_len - 2) % _size == 0) {
+            _refs.back() = _refs.back()->prev;
+            _refs.push_back(_refs.back()->next);
+        }
+        return _refs.front();
+    }
+
+    Node*
+    push_head(T&& value) {
+        ++_len;
+        if (_refs.front() == nullptr) {
+            return _refs.front() = _refs.back() = new Node{nullptr, std::move(value), nullptr};
+        }
+        _refs.front()->prev = new Node{nullptr, std::move(value), _refs.front()};
+        for (size_t i = 0; i < _refs.size() - 1; ++i) {
+            _refs[i] = _refs[i]->prev;
+        }
+        if (_len > 2 and (_len - 2) % _size == 0) {
+            _refs.back() = _refs.back()->prev;
+            _refs.push_back(_refs.back()->next);
+        }
+        return _refs.front();
+    }
+
+    Node*
+    insert(uint64_t pos, const T& value) {
+        if (pos == 0) {
+            return push_head(value);
+        }
+        if (pos == _len) {
+            return push_tail(value);
+        }
+        if (pos > _len) {
+            throw std::out_of_range("pos > length");
+        }
+
+        Node* node = at(pos);
+        node->prev = node->prev->next = new Node{node->prev, value, node};
+        for (size_t i = (pos % _size ? 1 : 0) + pos / _size; i < _refs.size() - 1; ++i) {
+            _refs[i] = _refs[i]->prev;
+        }
+        ++_len;
+        if (_len > 2 and (_len - 2) % _size == 0) {
+            _refs.back() = _refs.back()->prev;
+            _refs.push_back(_refs.back()->next);
+        }
+        return node->prev;
+    }
+
+    Node*
+    insert(uint64_t pos, T&& value) {
+        if (pos == 0) {
+            return push_head(std::move(value));
+        }
+        if (pos == _len) {
+            return push_tail(std::move(value));
+        }
+        if (pos > _len) {
+            throw std::out_of_range("pos > length");
+        }
+
+        Node* node = at(pos);
+        node->prev = node->prev->next = new Node{node->prev, std::move(value), node};
+        for (size_t i = (pos % _size ? 1 : 0) + pos / _size; i < _refs.size() - 1; ++i) {
+            _refs[i] = _refs[i]->prev;
+        }
+        ++_len;
+        if (_len > 2 and (_len - 2) % _size == 0) {
+            _refs.back() = _refs.back()->prev;
+            _refs.push_back(_refs.back()->next);
+        }
+        return node->prev;
     }
 
     [[nodiscard]] Node*

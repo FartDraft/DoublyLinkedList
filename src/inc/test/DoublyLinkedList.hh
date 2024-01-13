@@ -134,3 +134,74 @@ TEST(Method, At_Size) {
     ASSERT_EQ(list.at(8)->value, 9);
     ASSERT_EQ(list.at(9)->value, 10);
 }
+
+TEST(Method, PushHead_NoSize) {
+    DoublyLinkedList<int> list1(SIZE);
+    DoublyLinkedList<int> list2(SIZE, {1, 2, 3});
+
+    list1.push_head(3);
+    list1.push_head(2);
+    list1.push_head(1);
+
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, PushHead_Size) {
+    DoublyLinkedList<int> list1(3);
+    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+
+    list1.push_head(10);
+    list1.push_head(9);
+    list1.push_head(8);
+    list1.push_head(7);
+    list1.push_head(6);
+    list1.push_head(5);
+    list1.push_head(4);
+    list1.push_head(3);
+    list1.push_head(2);
+    list1.push_head(1);
+
+    ASSERT_EQ(list1, list2);
+    ASSERT_EQ(list2.at(0)->value, 1);
+    ASSERT_EQ(list2.at(1)->value, 2);
+    ASSERT_EQ(list2.at(2)->value, 3);
+    ASSERT_EQ(list2.at(3)->value, 4);
+    ASSERT_EQ(list2.at(4)->value, 5);
+    ASSERT_EQ(list2.at(5)->value, 6);
+    ASSERT_EQ(list2.at(6)->value, 7);
+    ASSERT_EQ(list2.at(7)->value, 8);
+    ASSERT_EQ(list2.at(8)->value, 9);
+    ASSERT_EQ(list2.at(9)->value, 10);
+}
+
+TEST(Method, InsertValue_NoSize) {
+    DoublyLinkedList<int> list1(SIZE, {1, 2, 4, 5});
+    DoublyLinkedList<int> list2(SIZE, {1, 2, 3, 4, 5});
+
+    list1.insert(2, 3);
+
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Method, InsertValue_Size) {
+    DoublyLinkedList<int> list1(3, {3, 4, 5, 8, 9});
+    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+
+    list1.insert(0, 1);
+    list1.insert(1, 2);
+    list1.insert(5, 6);
+    list1.insert(6, 7);
+    list1.insert(9, 10);
+
+    ASSERT_EQ(list1, list2);
+    ASSERT_EQ(list2.at(0)->value, 1);
+    ASSERT_EQ(list2.at(1)->value, 2);
+    ASSERT_EQ(list2.at(2)->value, 3);
+    ASSERT_EQ(list2.at(3)->value, 4);
+    ASSERT_EQ(list2.at(4)->value, 5);
+    ASSERT_EQ(list2.at(5)->value, 6);
+    ASSERT_EQ(list2.at(6)->value, 7);
+    ASSERT_EQ(list2.at(7)->value, 8);
+    ASSERT_EQ(list2.at(8)->value, 9);
+    ASSERT_EQ(list2.at(9)->value, 10);
+}
