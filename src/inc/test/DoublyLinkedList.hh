@@ -295,16 +295,70 @@ TEST(Method, Pop_NoSize) {
 }
 
 TEST(Method, Pop_Size) {
-    DoublyLinkedList<int> list1(3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+    DoublyLinkedList<int> list(3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
-    ASSERT_EQ(list1.pop(3), 4);
-    ASSERT_EQ(list1.pop(7), 9);
-    ASSERT_EQ(list1.pop(1), 2);
-    ASSERT_EQ(list1.pop(5), 8);
+    ASSERT_EQ(list.pop(3), 4);
+    ASSERT_EQ(list.pop(7), 9);
+    ASSERT_EQ(list.pop(1), 2);
+    ASSERT_EQ(list.pop(5), 8);
+    ASSERT_EQ(list.at(0)->value, 1);
+    ASSERT_EQ(list.at(1)->value, 3);
+    ASSERT_EQ(list.at(2)->value, 5);
+    ASSERT_EQ(list.at(3)->value, 6);
+    ASSERT_EQ(list.at(4)->value, 7);
+    ASSERT_EQ(list.at(5)->value, 10);
+}
+
+TEST(Method, Resize_) {
+    DoublyLinkedList<int> list(SIZE, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+    list.resize(3);
+
+    ASSERT_EQ(list.at(0)->value, 1);
+    ASSERT_EQ(list.at(1)->value, 2);
+    ASSERT_EQ(list.at(2)->value, 3);
+    ASSERT_EQ(list.at(3)->value, 4);
+    ASSERT_EQ(list.at(4)->value, 5);
+    ASSERT_EQ(list.at(5)->value, 6);
+    ASSERT_EQ(list.at(6)->value, 7);
+    ASSERT_EQ(list.at(7)->value, 8);
+    ASSERT_EQ(list.at(8)->value, 9);
+    ASSERT_EQ(list.at(9)->value, 10);
+    ASSERT_EQ(list.head()->value, 1);
+    ASSERT_EQ(list.tail()->value, 10);
+}
+
+TEST(Method, Sort_Ascending) {
+    DoublyLinkedList<int> list1(3, {2, 8, 7, 4, 6, 3, 5, 1, 9});
+    DoublyLinkedList<int> list2(3, {1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+    list1.sort();
+
+    ASSERT_EQ(list1, list2);
     ASSERT_EQ(list1.at(0)->value, 1);
-    ASSERT_EQ(list1.at(1)->value, 3);
-    ASSERT_EQ(list1.at(2)->value, 5);
+    ASSERT_EQ(list1.at(1)->value, 2);
+    ASSERT_EQ(list1.at(2)->value, 3);
+    ASSERT_EQ(list1.at(3)->value, 4);
+    ASSERT_EQ(list1.at(4)->value, 5);
+    ASSERT_EQ(list1.at(5)->value, 6);
+    ASSERT_EQ(list1.at(6)->value, 7);
+    ASSERT_EQ(list1.at(7)->value, 8);
+    ASSERT_EQ(list1.at(8)->value, 9);
+}
+
+TEST(Method, Sort_Descending) {
+    DoublyLinkedList<int> list1(4, {2, 8, 7, 4, 6, 3, 5, 1, 9});
+    DoublyLinkedList<int> list2(4, {9, 8, 7, 6, 5, 4, 3, 2, 1});
+
+    list1.sort(true);
+
+    ASSERT_EQ(list1, list2);
+    ASSERT_EQ(list1.at(0)->value, 9);
+    ASSERT_EQ(list1.at(1)->value, 8);
+    ASSERT_EQ(list1.at(2)->value, 7);
     ASSERT_EQ(list1.at(3)->value, 6);
-    ASSERT_EQ(list1.at(4)->value, 7);
-    ASSERT_EQ(list1.at(5)->value, 10);
+    ASSERT_EQ(list1.at(4)->value, 5);
+    ASSERT_EQ(list1.at(5)->value, 4);
+    ASSERT_EQ(list1.at(6)->value, 3);
+    ASSERT_EQ(list1.at(7)->value, 2);
+    ASSERT_EQ(list1.at(8)->value, 1);
 }
