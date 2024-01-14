@@ -3,6 +3,8 @@
 #include "../DoublyLinkedList.hh"
 
 const unsigned SIZE = 8;
+const std::string OUT_FILE = "out.txt";
+const std::string IN_FILE = OUT_FILE;
 
 TEST(Property, Constructor_Empty) {
     DoublyLinkedList<unsigned> list(SIZE);
@@ -91,6 +93,33 @@ TEST(Property, Assignment_InitializerList) {
 
     list1 = {-1, 0, -1};
 
+    ASSERT_EQ(list1, list2);
+}
+
+TEST(Property, OutFile_) {
+    DoublyLinkedList<int> list(SIZE, {1, 2, 3, 4, 5});
+    std::ofstream out_file;
+    out_file.open(OUT_FILE);
+
+    out_file << list;
+}
+
+TEST(Property, Input_) {
+    DoublyLinkedList<int> list(SIZE);
+    list.from_string = [](std::string line) -> int { return std::stoi(line); };
+
+    std::cin >> list;
+    std::cout << "Your list: " << list << std::endl;
+}
+
+TEST(Property, InFile_) {
+    DoublyLinkedList<int> list1(SIZE);
+    list1.from_string = [](std::string line) -> int { return std::stoi(line); };
+    std::ifstream in_file;
+    in_file.open(IN_FILE);
+    DoublyLinkedList<int> list2(SIZE, {1, 2, 3, 4, 5});
+
+    in_file >> list1;
     ASSERT_EQ(list1, list2);
 }
 

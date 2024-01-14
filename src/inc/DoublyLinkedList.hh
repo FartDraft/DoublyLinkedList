@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <fstream>
 #include <functional>
 #include <initializer_list>
 #include <iostream>
@@ -291,6 +292,75 @@ class DoublyLinkedList {
         return node;
     }
 
+    void
+    resize(S size) noexcept {
+        _size = size;
+        Node* curr = _refs.front();
+        _refs.clear();
+        for (S i = 0; curr->next != nullptr; ++i, curr = curr->next) {
+            if (i % size == 0) {
+                _refs.push_back(curr);
+            }
+        }
+        _refs.push_back(curr);
+    }
+
+    void
+    sort(bool descending = false) noexcept {
+        std::function<Node*(Node*, Node*)> _merge;
+        _merge = [&_merge, descending](Node* left, Node* right) -> Node* {
+            if (left == nullptr) {
+                return right;
+            }
+            if (right == nullptr) {
+                return left;
+            }
+            Node* result = nullptr;
+
+            if (descending ? left->value >= right->value : left->value <= right->value) {
+                result = left;
+                result->next = _merge(left->next, right);
+                result->next->prev = result;
+            } else {
+                result = right;
+                result->next = _merge(left, right->next);
+                result->next->prev = result;
+            }
+            return result;
+        };
+
+        auto _split = [](Node* head, Node** left, Node** right) -> void {
+            Node *slow = head, *fast = head->next;
+            while (fast != nullptr) {
+                fast = fast->next;
+                if (fast != nullptr) {
+                    slow = slow->next;
+                    fast = fast->next;
+                }
+            }
+
+            *left = head;
+            *right = slow->next;
+            (*right)->prev = (*right)->prev->next = nullptr;
+        };
+
+        std::function<void(Node**)> _merge_sort;
+        _merge_sort = [&_merge_sort, &_split, &_merge](Node** head) -> void {
+            if (*head == nullptr or (*head)->next == nullptr) {
+                return;
+            }
+            Node *left, *right;
+            _split(*head, &left, &right);
+
+            _merge_sort(&left);
+            _merge_sort(&right);
+            *head = _merge(left, right);
+        };
+
+        _merge_sort(&_refs.front());
+        resize(_size);
+    }
+
     DoublyLinkedList<T>&
     operator=(const DoublyLinkedList<T>& other) {
         clear();
@@ -316,12 +386,43 @@ class DoublyLinkedList {
             os << "nullptr";
         } else {
             os << list.head()->value;
-            for (Node* curr = list.head()->next; curr != nullptr; curr = curr->next) {
-                os << " <-> " << curr->value;
+            for (auto it = ++list.cbegin(); it != list.cend(); ++it) {
+                os << " <-> " << *it;
             }
         }
         os << " <- tail";
         return os;
+    }
+
+    friend std::ofstream&
+    operator<<(std::ofstream& ofs, const DoublyLinkedList<T>& list) noexcept {
+        for (auto it = list.cbegin(); it != list.cend(); ++it) {
+            ofs << *it << std::endl;
+        }
+        return ofs;
+    }
+
+    // Enter ' ' to stop input
+    friend std::istream&
+    operator>>(std::istream& is, DoublyLinkedList<T>& list) {
+        assert(list.from_string != nullptr
+               and "Please provide like so: list.from_string = [](std::string line) -> T {...}");
+        std::string line;
+        while (std::getline(is, line) and line != " ") {
+            list.push_tail(list.from_string(line));
+        }
+        return is;
+    }
+
+    friend std::ifstream&
+    operator>>(std::ifstream& ifs, DoublyLinkedList<T>& list) {
+        assert(list.from_string != nullptr
+               and "Please provide like so: list.from_string = [](std::string line) -> T {...}");
+        std::string line;
+        while (std::getline(ifs, line)) {
+            list.push_tail(list.from_string(line));
+        }
+        return ifs;
     }
 
     [[nodiscard]] constexpr bool
@@ -622,6 +723,9 @@ class DoublyLinkedList {
     crend() const {
         return ConstReverseIterator(nullptr);
     }
+
+    // Function to work with input operator
+    std::function<T(const std::string&)> from_string = nullptr;
 
   private:
     uint64_t _len = 0;
